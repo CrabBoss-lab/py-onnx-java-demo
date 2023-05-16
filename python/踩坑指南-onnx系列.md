@@ -1,4 +1,4 @@
-## 👇踩坑坑指南——onnx系列
+## 👇踩坑🕳指南——onnx系列
 
 目录：
 - [👇踩坑🕳指南——onnx系列](#踩坑指南onnx系列)
@@ -102,7 +102,7 @@
 - 总结：确保python中【训练时预处理的resize】、【torch模型预测时的resize】、【onnx模型预测时的resize】中的插值方法保持一致。
 
 
-## 坑🕳：如何使java、python加载onnx模型的输出一致？
+## 🕳5：如何使java、python加载onnx模型的输出一致？
 
 - 描述：在🕳五中已经解决了python中调用torch和onnx模型预测的输出一致，但是为了和java对接上，需要保证【python调用onnx模型预测的输出】和【Java调用onnx模型预测的输出】保持一致，如何保持一致？一开始java那边使用的opencv的resize，python这边使用的是transforms.Resize()，但是运行结果仍不一致，尽管是transforms.Resize()中使用的是的插值法是`Resize(shape,interpolation=InterpolationMode.BILINEAR)`,java那边使用的是`cv2.INTER_LINEAR`,虽然两者都线性，前者为双线性，后者为线性，但是最终输出结果会有出入；
 
