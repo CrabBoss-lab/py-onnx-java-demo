@@ -1,9 +1,23 @@
+# Author:yujunyu
+# -*- codeing = utf-8 -*-
+# @Time :2023/5/16 9:20
+# @Author :yujunyu
+# @Site :
+# @File :reset_transforms_resize.py
+# @software: PyCharm
+
 import torch
 import numpy as np
 from PIL import Image
 import cv2
 from collections.abc import Sequence
 
+############
+# 重写torchvision.transforms中Resize类
+# 重写内容：将原本的内的resize改用cv2的resize
+# 重写目的：使用cv2的interpolation
+# 参考：https://github.com/pytorch/vision/blob/main/torchvision/transforms/transforms.py#L283
+############
 
 class CV2_Resize(torch.nn.Module):
     """Resize the input image to the given size.
@@ -36,6 +50,12 @@ class CV2_Resize(torch.nn.Module):
     """
 
     def __init__(self, size, interpolation=cv2.INTER_LINEAR, max_size=None, antialias=None):
+        """
+        :param size:
+        :param interpolation: "cv2.INTER_LINEAR","cv2.INTER_CUBIC","cv2.INTER_AREA"
+        :param max_size:
+        :param antialias:
+        """
         super().__init__()
         if not isinstance(size, (int, Sequence)):
             raise TypeError(f"Size should be int or sequence. Got {type(size)}")

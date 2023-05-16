@@ -7,7 +7,6 @@ from load_data import Load_data
 from load_data import Get_datasets_info
 
 from torchvision.models import resnet18
-
 from net import Net
 
 
@@ -34,8 +33,13 @@ class Train:
         self.num_workers = num_workers
 
         # 加载数据集——并打印数据集信息
-        self.train_loader, self.val_loader, class_to_idx = Load_data(trainDir='dataset/train', valDir='dataset/val',
-                                                                     num_workers=self.num_workers, batch_size=self.batch_size)
+        self.train_loader, self.val_loader, class_to_idx = Load_data(
+            trainDir='dataset/train',
+            valDir='dataset/val',
+            shape=(224, 224),
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+        )
 
         print('datasets_info:')
         Get_datasets_info(train_loader=self.train_loader, val_loader=self.val_loader, class_to_idx=class_to_idx)
@@ -52,7 +56,7 @@ class Train:
             state = torch.load(self.model_filename)
             self.net.load_state_dict(state)
         else:
-            print("加载模型结构")
+            print("加载模型结构或预训练模型")
             # self.net = resnet18(pretrained=True)
             # fc_features = self.net.fc.in_features
             # self.net.fc = torch.nn.Linear(in_features=fc_features, out_features=3)
@@ -205,16 +209,23 @@ if __name__ == "__main__":
     num_wokers = 0
 
     # Save weights file
-    # 保存至本地
+    # 1)保存至本地
     # checkpoint_folder = 'checkpoints'
     # if not os.path.exists(checkpoint_folder):
     #     os.mkdir(checkpoint_folder)
     # model_filename = os.path.join(checkpoint_folder, 'test.pth')
-    # 保存至wandb云端
+    # 2)保存至wandb云端
     model_filename = 'model.pth'
 
     # Instantiate train
-    trainer = Train(start_epoch, epoch, lr, batch_size, num_wokers, model_filename)
+    trainer = Train(
+        start_epoch=start_epoch,
+        epoch=epoch,
+        lr=lr,
+        batch_size=batch_size,
+        num_workers=num_wokers,
+        model_filename=model_filename
+    )
 
     # Execute trainingl
     trainer.training()

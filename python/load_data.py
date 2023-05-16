@@ -10,14 +10,12 @@
 加载数据集、数据预处理
     数据集目录格式:
         |-dataset
-            |-images
+            |-train
                 |-类别1
                     |-img.png
                     |-img2.png
                     |-...
                 |-类别2
-                |-类别3
-                |-类别4
                 |-...
     注意:同一类别在同一文件夹下，不同类别文件夹是同级目录
 """
@@ -27,24 +25,23 @@ from torchvision.transforms import Resize, Compose, ToTensor, Normalize, RandomH
     RandomResizedCrop, ColorJitter, RandomGrayscale, RandomCrop
 import torch.utils.data
 
-from torchvision.transforms.functional import InterpolationMode
-from mogai_transforms_resize import CV2_Resize
+from .reset_transforms_resize import CV2_Resize
 import cv2
 
-def Load_data(trainDir, valDir, shape=(224, 224), batch_size=128, num_workers=0):
+
+def Load_data(trainDir: str, valDir: str, shape: tuple, batch_size: int, num_workers: int):
     '''
     # 加载指定目录下的图像，返回数据加载器
     :param trainDir:
     :param valDir:
     :param shape:
     :param batch_size:
-    :return:
+    :return:train_loader, val_loader, train_set.class_to_idx
     '''
     # 图像变换
     transform_train = Compose([
         # Resize(shape)
         # Resize(shape,interpolation=InterpolationMode.BILINEAR),
-        # Resize(shape, interpolation=cv2.INTER_LINEAR),
         CV2_Resize(shape, interpolation=cv2.INTER_LINEAR),
         RandomCrop(224, padding=20),
         RandomHorizontalFlip(),  # 0.5的进行水平翻转
@@ -57,7 +54,7 @@ def Load_data(trainDir, valDir, shape=(224, 224), batch_size=128, num_workers=0)
     ])
     transform_val = Compose([
         # Resize(shape),
-        # Resize(shape,interpolation=InterpolationMode.BILINEAR),  # resize
+        # Resize(shape,interpolation=InterpolationMode.BILINEAR),
         CV2_Resize(shape, interpolation=cv2.INTER_LINEAR),
         ToTensor(),
         # Normalize(mean=[0.4740, 0.4948, 0.4338], std=[0.1920, 0.1591, 0.2184])
@@ -71,6 +68,7 @@ def Load_data(trainDir, valDir, shape=(224, 224), batch_size=128, num_workers=0)
     # 封装批处理的迭代器（加载器）
     train_loader = torch.utils.data.DataLoader(dataset=train_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
     val_loader = torch.utils.data.DataLoader(dataset=val_set, batch_size=batch_size, num_workers=num_workers, shuffle=False)
+
     return train_loader, val_loader, train_set.class_to_idx
 
 
@@ -99,5 +97,11 @@ def Get_datasets_info(train_loader, val_loader, class_to_idx):
 
 # 测试
 if __name__ == "__main__":
-    train_loader, val_loader, class_to_idx = Load_data('./dataset/train', './dataset/val', num_workers=0, batch_size=128)
+    train_loader, val_loader, class_to_idx = Load_data(
+        trainDir='./dataset/train',
+        valDir='./dataset/val',
+        shape=(224, 224),
+        batch_size=128,
+        num_workers=0
+    )
     Get_datasets_info(train_loader, val_loader, class_to_idx)

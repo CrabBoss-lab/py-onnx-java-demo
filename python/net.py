@@ -9,6 +9,10 @@ import torch
 import torch.nn as nn
 
 
+#####
+# 搭建CNN：三层卷积、两层全连接
+#####
+
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
