@@ -3,7 +3,7 @@
 # Java
 java加载onnx模型并进行预测
 
-# python
+# Python
 python训练torch模型，并转换为onnx模型，并加载torch和onnx模型进行预测
 
 # Realize
