@@ -56,6 +56,7 @@ if __name__ == '__main__':
     # img = cv2.imread(img_path)
     # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     # img_tensor = preprocess(img)
+
     # 打开测试图片 preprocessbytorch
     img = Image.open(img_path)
     img_tensor=preprocessbytorch(img)
