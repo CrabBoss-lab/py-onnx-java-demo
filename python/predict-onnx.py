@@ -1,10 +1,12 @@
 import onnxruntime
 import numpy as np
 import cv2
+from PIL import Image
+
+from torchvision.transforms import Resize
+from torchvision.transforms.functional import InterpolationMode
 
 from reset_transforms_resize import CV2_Resize
-
-
 
 
 # 预处理图片
@@ -20,11 +22,13 @@ def preprocess(img):
     img = np.expand_dims(img, axis=0)
     return img
 
+
 def preprocessbytorch(img):
     # 定义图像预处理
     from torchvision import transforms
     transform = transforms.Compose([
         # transforms.Resize((224, 224)),  # resize
+        # Resize((224, 224), interpolation=InterpolationMode.BILINEAR),
         CV2_Resize((224, 224), interpolation=cv2.INTER_LINEAR),
         transforms.ToTensor(),  # 转为tensor
         # transforms.Normalize(mean=[0.4737, 0.4948, 0.4336], std=[0.1920, 0.1592, 0.2184])  # 归一化
@@ -36,7 +40,8 @@ def preprocessbytorch(img):
 
     return img_tensor.numpy()
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     # 加载模型
     model_path = 'weight/model.onnx'
     session = onnxruntime.InferenceSession(model_path)
@@ -48,14 +53,14 @@ if __name__=='__main__':
     img_path = 'dataset/tomato25.JPG'
     print(img_path)
     # 打开测试图片 preprocess
-    img = cv2.imread(img_path)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # img = cv2.imread(img_path)
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # img_tensor = preprocess(img)
     # 打开测试图片 preprocessbytorch
-    # img = Image.open(img_path)
-
+    img = Image.open(img_path)
+    img_tensor=preprocessbytorch(img)
 
     # 进行预测
-    img_tensor = preprocess(img)
     outputs = session.run(None, input_feed={'input.1': img_tensor})  # 模型输出
     print(outputs)
     print(np.exp(outputs) / np.sum(np.exp(outputs)))

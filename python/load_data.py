@@ -25,7 +25,7 @@ from torchvision.transforms import Resize, Compose, ToTensor, Normalize, RandomH
     RandomResizedCrop, ColorJitter, RandomGrayscale, RandomCrop
 import torch.utils.data
 
-from .reset_transforms_resize import CV2_Resize
+from reset_transforms_resize import CV2_Resize
 import cv2
 
 

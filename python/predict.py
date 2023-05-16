@@ -10,6 +10,9 @@ from torchvision import transforms
 from PIL import Image
 import time
 
+from torchvision.transforms import Resize
+from torchvision.transforms.functional import InterpolationMode
+
 import cv2
 from reset_transforms_resize import CV2_Resize
 
@@ -55,7 +58,7 @@ class Predict:
         # 定义图像预处理
         transform = transforms.Compose([
             # transforms.Resize((224, 224)),  # resize
-            # transforms.Resize((224, 224), interpolation=cv2.INTER_LINEAR),  # resize
+            # Resize((224, 224), interpolation=InterpolationMode.BILINEAR),
             CV2_Resize((224, 224), interpolation=cv2.INTER_LINEAR),
             transforms.ToTensor(),  # 转为tensor
             # transforms.Normalize(mean=[0.4737, 0.4948, 0.4336], std=[0.1920, 0.1592, 0.2184])  # 归一化
