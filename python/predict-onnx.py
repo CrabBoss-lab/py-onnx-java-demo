@@ -53,13 +53,13 @@ if __name__ == '__main__':
     img_path = 'dataset/tomato25.JPG'
     print(img_path)
     # 打开测试图片 preprocess
-    # img = cv2.imread(img_path)
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # img_tensor = preprocess(img)
+    img = cv2.imread(img_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_tensor = preprocess(img)
 
     # 打开测试图片 preprocessbytorch
-    img = Image.open(img_path)
-    img_tensor=preprocessbytorch(img)
+    # img = Image.open(img_path)
+    # img_tensor=preprocessbytorch(img)
 
     # 进行预测
     outputs = session.run(None, input_feed={'input.1': img_tensor})  # 模型输出
