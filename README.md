@@ -1,4 +1,4 @@
-![输入图片说明](python/assets/Snipaste_2023-05-17_16-32-29.jpg)
+![输入图片说明](python/assets/intro.jpg)
 
 # 👇Project
 
