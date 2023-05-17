@@ -1,6 +1,6 @@
 # 👇Project
 
-![输入图片说明](python/assets/Snipaste_2023-05-17_16-31-02.jpg)
+![输入图片说明](python/assets/Snipaste_2023-05-17_16-32-29.jpg)
 
 # Python
 python训练torch模型，并转换为onnx模型，并加载torch和onnx模型进行预测
