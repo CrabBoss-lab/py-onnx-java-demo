@@ -2,6 +2,7 @@ package org.example.util;
 
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
+import ai.onnxruntime.OrtException;
 import org.opencv.core.Point;
 import org.opencv.core.*;
 import org.opencv.dnn.Dnn;
@@ -424,5 +425,28 @@ public class ImageMat implements Serializable {
             this.mat.release();
             this.mat = null;
         }
+    }
+
+    public OnnxTensor transform(BufferedImage img){
+        float[][][][] pixelData = new float[1][3][224][224];
+        // 获取图像的 RGB 像素值并进行归一化
+        for (int i = 0; i < 224; ++i) {
+            for (int j = 0; j < 224; ++j) {
+                int rgb = img.getRGB(j, i);
+                int r = (rgb >> 16) & 0xFF;
+                int g = (rgb >> 8) & 0xFF;
+                int b = (rgb & 0xFF);
+                pixelData[0][0][i][j] = (float) (Math.round(Math.min(Math.max(((float)r / 255.0f - 0.4737f) / 0.1920f, 0), 1) * 10000) / 10000.0);
+                pixelData[0][1][i][j] = (float) (Math.round(Math.min(Math.max(((float)g / 255.0f - 0.4948f) / 0.1592f, 0), 1) * 10000) / 10000.0);
+                pixelData[0][2][i][j] = (float) (Math.round(Math.min(Math.max(((float)b / 255.0f - 0.4336f) / 0.2184f, 0), 1) * 10000) / 10000.0);
+            }
+        }
+        OnnxTensor inputTensor = null;
+        try {
+            inputTensor = OnnxTensor.createTensor(OrtEnvironment.getEnvironment(), pixelData);
+        } catch (OrtException e) {
+            throw new RuntimeException(e);
+        }
+        return inputTensor;
     }
 }

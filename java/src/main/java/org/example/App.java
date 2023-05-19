@@ -4,6 +4,9 @@ import ai.onnxruntime.OnnxTensor;
 import org.example.util.BaseOnnxInfer;
 import org.example.util.ImageMat;
 import org.opencv.core.Scalar;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 
@@ -39,11 +42,21 @@ public class App extends BaseOnnxInfer
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+        //**************************************************************************************************
+        try {
+            BufferedImage read = ImageIO.read(file);
+            imageMat.transform(read);
+                        //此段代码是图片归一化标准化的一个过程 transform()方法中将BufferedImage对象转换成OnnxTensor对象
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //**************************************************************************************************
         ImageMat imageMats = imageMat.clone();
         //transforms.Resize((224, 224))
         OnnxTensor onnxTensor = imageMats.resizeAndNoReleaseMat(224, 224)      //将图片进行resize
                 // transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
                 .blobFromImageAndDoReleaseMat(1.0 / 127.5, new Scalar(127.5, 127.5, 127.5), true) //进行归一化标准化
+
                 //transforms.ToTensor(),  img_tensor = transform(img).unsqueeze(0)
                 .to4dFloatOnnxTensorAndDoReleaseMat(true);  // 转为tensor  图像预处理并转换为形状为(1, C, H, W)的张量
         //y = self.net(img)
